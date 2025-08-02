@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSpec AI - Enhanced Document Understanding</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain me-2"></i>SmartSpec AI
+            </a>
+            <span class="navbar-text">
+                Intelligent Test Case Generation & Validation
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h1 class="display-4 text-primary mb-3">SmartSpec AI</h1>
+                        <p class="lead text-muted">Upload SRS documents, generate test cases, and ensure complete requirement coverage with AI-powered validation and traceability</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-file-upload me-2"></i>Upload SRS Document</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-area border-dashed p-4 text-center" id="srs-upload-area">
+                            <i class="fas fa-file-pdf fa-3x text-info mb-3"></i>
+                            <h6>Drop SRS document here or click to browse</h6>
+                            <p class="text-muted small">Supports PDF, DOCX, TXT files</p>
+                            <button class="btn btn-info" id="srs-upload-btn">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>Select SRS File
+                            </button>
+                            <input type="file" id="srs-file-input" class="d-none" accept=".pdf,.docx,.txt">
+                            <div id="srs-upload-status" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="fas fa-vial me-2"></i>Upload Existing Test Cases (Optional)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-area border-dashed p-4 text-center" id="tc-upload-area">
+                            <i class="fas fa-file-code fa-3x text-secondary mb-3"></i>
+                            <h6>Drop test cases file here or click to browse</h6>
+                            <p class="text-muted small">Supports JSON format</p>
+                            <button class="btn btn-secondary" id="tc-upload-btn">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>Select Test Cases File
+                            </button>
+                            <input type="file" id="tc-file-input" class="d-none" accept=".json">
+                            <div id="tc-upload-status" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Status -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Processing Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="process-step" id="step-upload">
+                                    <div class="step-icon bg-secondary">
+                                        <i class="fas fa-upload"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Document Upload</h6>
+                                        <small class="text-muted">Upload SRS document</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="process-step" id="step-extract">
+                                    <div class="step-icon bg-secondary">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Text Extraction</h6>
+                                        <small class="text-muted">Extract and clean text</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="process-step" id="step-analyze">
+                                    <div class="step-icon bg-secondary">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Semantic Analysis</h6>
+                                        <small class="text-muted">Build semantic index</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <div class="process-step" id="step-ready">
+                                    <div class="step-icon bg-secondary">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h6>Ready</h6>
+                                        <small class="text-muted">System ready for queries</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Query Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-search me-2"></i>Generate Test Cases</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-lg" 
+                                           id="query-input" 
+                                           placeholder="Enter your query (e.g., Generate test cases for user authentication)">
+                                    <button class="btn btn-primary btn-lg" id="query-btn">
+                                        <i class="fas fa-magic me-2"></i>Generate
+                                    </button>
+                                </div>
+                                <div id="query-status" class="mt-2"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" id="validate-btn" disabled>
+                                        <i class="fas fa-check-circle me-2"></i>Validate Test Cases
+                                    </button>
+                                    <button class="btn btn-warning" id="map-btn" disabled>
+                                        <i class="fas fa-project-diagram me-2"></i>Map to Requirements
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Panel -->
+        <div class="row mb-4" id="actions-panel" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Advanced Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="btn btn-info w-100 mb-2" id="traceability-btn">
+                                    <i class="fas fa-table me-2"></i>Generate Traceability Matrix
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle w-100 mb-2" type="button" 
+                                            id="export-dropdown" data-bs-toggle="dropdown">
+                                        <i class="fas fa-download me-2"></i>Export Reports
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" id="export-testcases-pdf">
+                                            <i class="fas fa-file-pdf me-2"></i>Test Cases (PDF)
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-validation-pdf">
+                                            <i class="fas fa-file-alt me-2"></i>Validation Report (PDF)
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-traceability-pdf">
+                                            <i class="fas fa-table me-2"></i>Traceability Matrix (PDF)
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#" id="export-traceability-excel">
+                                            <i class="fas fa-file-excel me-2"></i>Traceability Matrix (Excel)
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-secondary w-100 mb-2" id="clear-btn">
+                                    <i class="fas fa-trash me-2"></i>Clear All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" style="display: none;">
+            <!-- Test Cases Results -->
+            <div class="row mb-4" id="test-cases-section">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-vials me-2"></i>Generated Test Cases</h5>
+                            <span class="badge bg-primary" id="test-cases-count">0</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="test-cases-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Results -->
+            <div class="row mb-4" id="validation-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-check-double me-2"></i>Validation Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="validation-summary" class="mb-3"></div>
+                            <div id="validation-details"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapping Results -->
+            <div class="row mb-4" id="mapping-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-sitemap me-2"></i>Requirement Mapping Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="mapping-summary" class="mb-3"></div>
+                            <div id="mapping-details"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traceability Matrix -->
+            <div class="row mb-4" id="traceability-section" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-table me-2"></i>Traceability Matrix</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="traceability-summary" class="mb-3"></div>
+                            <div id="traceability-matrix" class="table-responsive"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 id="loading-text">Processing...</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description Section -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="text-center text-primary mb-4">About SpecTacular AI</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-info mb-3">What is SpecTacular AI?</h4>
+                                <p class="text-muted">
+                                    SpecTacular AI is an intelligent, web-based offline AI system designed to automate software test case generation from Software Requirements Specification (SRS) documents. Our system uses advanced Transformer-based models and semantic search to generate, validate, and trace test cases while maintaining complete offline functionality.
+                                </p>
+                                
+                                <h4 class="text-info mb-3 mt-4">Key Features</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Automated Test Generation:</strong> Generate comprehensive test cases from requirements documents</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Intelligent Validation:</strong> Validate test cases against requirements with scoring system</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Requirement Mapping:</strong> Map test cases to specific requirements for traceability</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Offline Operation:</strong> Complete functionality without internet dependency</li>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>Multiple Export Formats:</strong> Export results to PDF and Excel formats</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h4 class="text-info mb-3">How to Use</h4>
+                                <div class="step-guide">
+                                    <div class="d-flex mb-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                                <small>1</small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <strong>Upload SRS Document</strong>
+                                            <p class="text-muted small mb-0">Upload your Software Requirements Specification document in PDF, DOCX, or TXT format.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex mb-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                                <small>2</small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <strong>Wait for Processing</strong>
+                                            <p class="text-muted small mb-0">The system will extract text, perform semantic analysis, and build an index.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex mb-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                                <small>3</small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <strong>Generate Test Cases</strong>
+                                            <p class="text-muted small mb-0">Enter queries like "Generate test cases for user authentication" to create specific test cases.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex mb-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                                <small>4</small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <strong>Validate & Export</strong>
+                                            <p class="text-muted small mb-0">Validate test cases, map to requirements, and export reports in PDF or Excel format.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-info mb-3 mt-4">Sample Queries</h4>
+                                <div class="bg-light p-3 rounded">
+                                    <small class="text-muted">
+                                        • "Generate test cases for user registration with email verification"<br>
+                                        • "Create test cases for payment processing functionality"<br>
+                                        • "Test cases for role-based access control"<br>
+                                        • "Generate security test cases for user authentication"
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                                <h5>Secure & Offline</h5>
+                                <p class="text-muted small">All processing happens locally. No data leaves your system.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-robot fa-2x text-info mb-2"></i>
+                                <h5>AI-Powered</h5>
+                                <p class="text-muted small">Advanced Transformer models ensure intelligent test case generation.</p>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                                <h5>Complete Traceability</h5>
+                                <p class="text-muted small">Full requirement-to-test-case mapping and coverage analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 SpecTacular AI. Intelligent Test Case Generation & Validation Platform.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
