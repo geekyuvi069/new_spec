@@ -1,0 +1,10 @@
+Flask
+gunicorn
+sentence-transformers
+faiss-cpu
+PyPDF2
+reportlab
+numpy
+scikit-learn
+torch
+transformers
