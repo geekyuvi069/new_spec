@@ -1,4 +1,4 @@
-# SmartSpec AI (SpecTacular.AI) - Replit Guide
+# SmartSpec AI (SpecTacular.AI) -  Guide
 
 ## Overview
 
